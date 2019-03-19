@@ -32,7 +32,7 @@ public class EmpDataDAO extends EmpDetailsJpaController {
     
     public List<EmpDetails> getEmpsByProdId(int prodId) {
         EntityManager em = getEntityManager();
-        TypedQuery<EmpDetails> query = em.createNamedQuery("EmpDetails.findGheu", EmpDetails.class);
+        TypedQuery<EmpDetails> query = em.createNamedQuery("EmpDetails.findEmpsByProdId", EmpDetails.class);
         query.setParameter("prodId", prodId);
         List<EmpDetails> empDataByProduct = query.getResultList();
         return empDataByProduct;

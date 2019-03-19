@@ -3,6 +3,11 @@
     <named-query name="EmpDetails.getEmpsByPostId">
         <query>SELECT e FROM EmpDetails e WHERE e.empDetailsPK.postId = :postId</query>
     </named-query>
-
+    <named-query name="EmpDetails.findEmpsByProdId">
+        <query>SELECT e FROM EmpDetails e JOIN e.productInfoList pe WHERE pe.productId = :prodId</query>
+    </named-query>
+    <named-query name="ProductInfo.findProdsByEmpId">
+        <query>SELECT p FROM ProductInfo p JOIN p.empDetailsList pe WHERE pe.empDetailsPK.empId = :empId</query>
+    </named-query>
     
 </entity-mappings>

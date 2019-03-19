@@ -23,11 +23,11 @@ public class ProdInfoDAO extends ProductInfoJpaController{
         super(Persistence.createEntityManagerFactory("com.dgrf_empDev_jar_1.0-SNAPSHOTPU"));
     }
     
-    public List<ProductInfo> getProdsbyEmpId(int empId) {
+    public List<ProductInfo> getProdsByEmpId(int empId) {
         EntityManager em = getEntityManager();
-        TypedQuery<ProductInfo> query = em.createNamedQuery("ProductInfo.findAllMeoaw", ProductInfo.class);
+        TypedQuery<ProductInfo> query = em.createNamedQuery("ProductInfo.findProdsByEmpId", ProductInfo.class);
         query.setParameter("empId", empId);
-        List<ProductInfo> productsByEmpId = query.getResultList();
-        return productsByEmpId;
+        List<ProductInfo> prodDataByEmployee = query.getResultList();
+        return prodDataByEmployee;
     }
 }

@@ -6,7 +6,9 @@
 package com.org.empdev;
 
 import com.dgrf.empdev.DAO.EmpDataDAO;
+import com.dgrf.empdev.DAO.ProdInfoDAO;
 import com.dgrf.empdev.entities.EmpDetails;
+import com.dgrf.empdev.entities.ProductInfo;
 import java.util.List;
 
 /**
@@ -29,6 +31,14 @@ public class SortBy {
         List<EmpDetails> empDetailsList = empDataDAO.getEmpsByProdId(pId);
         
         return empDetailsList;
+    }
+    
+    public List<ProductInfo> getProdByEmployee(int eId) {
+        ProdInfoDAO prodInfoDAO = new ProdInfoDAO();
+        
+        List<ProductInfo> productInfoList = prodInfoDAO.getProdsByEmpId(eId);
+        
+        return productInfoList;
     }
     
 }
