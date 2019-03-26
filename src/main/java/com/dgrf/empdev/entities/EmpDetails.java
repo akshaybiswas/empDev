@@ -32,10 +32,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "emp_details")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "EmpDetails.findAll", query = "SELECT e FROM EmpDetails e")  
-
-})
-
+    @NamedQuery(name = "EmpDetails.findAll", query = "SELECT e FROM EmpDetails e"),
+    @NamedQuery(name = "EmpDetails.findByPostId", query = "SELECT e FROM EmpDetails e WHERE e.empDetailsPK.postId = :postId"),
+    @NamedQuery(name = "EmpDetails.findByEmpId", query = "SELECT e FROM EmpDetails e WHERE e.empDetailsPK.empId = :empId"),
+    @NamedQuery(name = "EmpDetails.findByEmpName", query = "SELECT e FROM EmpDetails e WHERE e.empName = :empName"),
+    @NamedQuery(name = "EmpDetails.findByEmpJoined", query = "SELECT e FROM EmpDetails e WHERE e.empJoined = :empJoined"),
+    @NamedQuery(name = "EmpDetails.findByEmpExp", query = "SELECT e FROM EmpDetails e WHERE e.empExp = :empExp")})
 public class EmpDetails implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,9 +46,6 @@ public class EmpDetails implements Serializable {
     @Basic(optional = false)
     @Column(name = "emp_name")
     private String empName;
-    @Basic(optional = false)
-    @Column(name = "emp_salary")
-    private int empSalary;
     @Basic(optional = false)
     @Column(name = "emp_joined")
     @Temporal(TemporalType.TIMESTAMP)
@@ -71,10 +70,9 @@ public class EmpDetails implements Serializable {
         this.empDetailsPK = empDetailsPK;
     }
 
-    public EmpDetails(EmpDetailsPK empDetailsPK, String empName, int empSalary, Date empJoined, int empExp) {
+    public EmpDetails(EmpDetailsPK empDetailsPK, String empName, Date empJoined, int empExp) {
         this.empDetailsPK = empDetailsPK;
         this.empName = empName;
-        this.empSalary = empSalary;
         this.empJoined = empJoined;
         this.empExp = empExp;
     }
@@ -97,14 +95,6 @@ public class EmpDetails implements Serializable {
 
     public void setEmpName(String empName) {
         this.empName = empName;
-    }
-
-    public int getEmpSalary() {
-        return empSalary;
-    }
-
-    public void setEmpSalary(int empSalary) {
-        this.empSalary = empSalary;
     }
 
     public Date getEmpJoined() {
@@ -164,5 +154,5 @@ public class EmpDetails implements Serializable {
     public String toString() {
         return "com.dgrf.empdev.entities.EmpDetails[ empDetailsPK=" + empDetailsPK + " ]";
     }
-
+    
 }

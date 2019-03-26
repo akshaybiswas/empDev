@@ -27,9 +27,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "emp_post")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "EmpPost.findAll", query = "SELECT e FROM EmpPost e")
-    })
-
+    @NamedQuery(name = "EmpPost.findAll", query = "SELECT e FROM EmpPost e"),
+    @NamedQuery(name = "EmpPost.findByPostId", query = "SELECT e FROM EmpPost e WHERE e.postId = :postId"),
+    @NamedQuery(name = "EmpPost.findByPostName", query = "SELECT e FROM EmpPost e WHERE e.postName = :postName"),
+    @NamedQuery(name = "EmpPost.findByPostGp", query = "SELECT e FROM EmpPost e WHERE e.postGp = :postGp")})
 public class EmpPost implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -116,5 +117,5 @@ public class EmpPost implements Serializable {
     public String toString() {
         return "com.dgrf.empdev.entities.EmpPost[ postId=" + postId + " ]";
     }
-
+    
 }

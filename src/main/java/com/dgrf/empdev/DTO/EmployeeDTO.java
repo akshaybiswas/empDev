@@ -5,7 +5,9 @@
  */
 package com.dgrf.empdev.DTO;
 
+import com.dgrf.empdev.entities.ProductInfo;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -16,9 +18,9 @@ public class EmployeeDTO {
     private String name;
     private int postId;
     private String postName;
-    private int salary;
     private Date joined;
     private int exp;
+    private Integer[] productIdList; 
 
     public int getId() {
         return Id;
@@ -52,14 +54,6 @@ public class EmployeeDTO {
         this.postName = postName;
     }
 
-    public int getSalary() {
-        return salary;
-    }
-
-    public void setSalary(int salary) {
-        this.salary = salary;
-    }
-
     public Date getJoined() {
         return joined;
     }
@@ -74,6 +68,14 @@ public class EmployeeDTO {
 
     public void setExp(int exp) {
         this.exp = exp;
+    }
+
+    public Integer[] getProductIdList() {
+        return productIdList;
+    }
+
+    public void setProductIdList(Integer[] productIdList) {
+        this.productIdList = productIdList;
     }
 
     
