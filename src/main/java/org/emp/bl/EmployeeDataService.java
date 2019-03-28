@@ -17,9 +17,7 @@ import org.dgrf.empdev.entities.EmpDetails;
 import org.dgrf.empdev.entities.EmpDetailsPK;
 import org.dgrf.empdev.entities.EmpPost;
 import org.dgrf.empdev.entities.ProductInfo;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -41,6 +39,32 @@ public class EmployeeDataService {
         postDTO.setGp(empPost.getPostGp());
 
         return postDTO;
+    }
+
+    public EmployeeDTO getEmployeeDTO(EmployeeDTO employeeDTO) {
+        EmpDataDAO empDataDAO = new EmpDataDAO();
+        EmpDetailsPK empDetailsPK = new EmpDetailsPK();
+
+        empDetailsPK.setEmpId(employeeDTO.getId());
+        empDetailsPK.setPostId(employeeDTO.getPostId());
+
+        EmpDetails empDetails = empDataDAO.findEmpDetails(empDetailsPK);
+
+//        List<ProductDTO> productDTOList = getProdByEmp(employeeDTO.getId());
+//        Integer productIdList[]=new Integer[productDTOList.size()];
+//        for(int i = 0; i<productDTOList.size(); i++) {
+//            productIdList[i] = productDTOList.get(i).getId();
+//        }
+        List<ProductInfo> productInfoList = empDetails.getProductInfoList();
+        Integer productIdList[] = new Integer[productInfoList.size()];
+        for (int i = 0; i < productInfoList.size(); i++) {
+            productIdList[i] = productInfoList.get(i).getProductId();
+        }
+
+        employeeDTO.setName(empDetails.getEmpName());
+        employeeDTO.setProductIdList(productIdList);
+
+        return employeeDTO;
     }
 
     public ProductDTO getProductDTO(int prodId) {
@@ -238,7 +262,7 @@ public class EmployeeDataService {
         return responseCode;
     }
 
-    public int updateEmployee(EmployeeDTO employeeDTO, List<ProductInfo> productInfoList) {
+    public int updateEmployee(EmployeeDTO employeeDTO) {
         int responseCode;
 
         EmpDataDAO empDataDAO = new EmpDataDAO();
@@ -255,6 +279,15 @@ public class EmployeeDataService {
         empDetails.setEmpDetailsPK(empDetailsPK);
         empDetails.setEmpPost(empPost);
         empDetails.setEmpName(employeeDTO.getName());
+
+        ProdInfoDAO prodInfoDAO = new ProdInfoDAO();
+        List<ProductInfo> productInfoList = new ArrayList<>();
+        Integer[] productIdArray = employeeDTO.getProductIdList();
+
+        for(int i = 0; i < productIdArray.length; i++) {
+            productInfoList.add(prodInfoDAO.findProductInfo(productIdArray[i]));
+        }
+
         empDetails.setProductInfoList(productInfoList);
 
         try {

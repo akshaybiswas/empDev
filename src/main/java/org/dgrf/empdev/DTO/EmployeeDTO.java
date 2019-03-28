@@ -5,9 +5,7 @@
  */
 package org.dgrf.empdev.DTO;
 
-import org.dgrf.empdev.entities.ProductInfo;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
