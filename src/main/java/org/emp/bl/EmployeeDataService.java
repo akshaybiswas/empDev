@@ -238,6 +238,93 @@ public class EmployeeDataService {
         return responseCode;
     }
 
+    public int updateEmployee(EmployeeDTO employeeDTO) {
+        int responseCode;
+
+        EmpDataDAO empDataDAO = new EmpDataDAO();
+        EmpDetailsPK empDetailsPK = new EmpDetailsPK();
+        EmpPostsDAO empPostsDAO = new EmpPostsDAO();
+
+        empDetailsPK.setEmpId(employeeDTO.getId());
+        empDetailsPK.setPostId(employeeDTO.getPostId());
+
+        EmpDetails empDetails = empDataDAO.findEmpDetails(empDetailsPK);
+
+        EmpPost empPost = empPostsDAO.findEmpPost(employeeDTO.getPostId());
+
+        empDetails.setEmpDetailsPK(empDetailsPK);
+        empDetails.setEmpPost(empPost);
+        empDetails.setEmpName(employeeDTO.getName());
+
+        ProdInfoDAO prodInfoDAO = new ProdInfoDAO();
+        List<ProductInfo> productInfoList = new ArrayList<>();
+        Integer[] productIdArray = employeeDTO.getProductIdList();
+
+        for (int i = 0; i < productIdArray.length; i++) {
+            productInfoList.add(prodInfoDAO.findProductInfo(productIdArray[i]));
+        }
+
+        empDetails.setProductInfoList(productInfoList);
+
+        try {
+            empDataDAO.edit(empDetails);
+            responseCode = ResponseCode.SUCCESS;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.CONTACT_ADMIN;
+        }
+        return responseCode;
+    }
+
+    public int deleteEmployee(EmployeeDTO employeeDTO) {
+        int responseCode;
+
+        EmpDataDAO empDataDAO = new EmpDataDAO();
+        EmpDetailsPK empDetailsPK = new EmpDetailsPK();
+
+        empDetailsPK.setEmpId(employeeDTO.getId());
+        empDetailsPK.setPostId(employeeDTO.getPostId());
+
+        EmpDetails empDetails = empDataDAO.findEmpDetails(empDetailsPK);
+
+        try {
+            empDataDAO.destroy(empDetails.getEmpDetailsPK());
+            responseCode = ResponseCode.SUCCESS;
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.INVALID;
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.CONTACT_ADMIN;
+        }
+        return responseCode;
+    }
+
+    public int addProductsToEmp(EmployeeDTO employeeDTO, List<ProductInfo> productInfoList) {
+        int responseCode;
+
+        EmpDataDAO empDataDAO = new EmpDataDAO();
+        EmpDetailsPK empDetailsPK = new EmpDetailsPK();
+
+        empDetailsPK.setEmpId(employeeDTO.getId());
+        empDetailsPK.setPostId(employeeDTO.getPostId());
+
+        EmpDetails empDetails = empDataDAO.findEmpDetails(empDetailsPK);
+
+        empDetails.setProductInfoList(productInfoList);
+
+        try {
+            empDataDAO.edit(empDetails);
+            responseCode = ResponseCode.SUCCESS;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.CONTACT_ADMIN;
+        }
+        return responseCode;
+    }
+
     public int addPost(PostDTO postDTO) {
         int responseCode;
 
@@ -263,63 +350,43 @@ public class EmployeeDataService {
         return responseCode;
     }
 
-    public int updateEmployee(EmployeeDTO employeeDTO) {
+    public int addProduct(ProductDTO productDTO) {
         int responseCode;
 
-        EmpDataDAO empDataDAO = new EmpDataDAO();
-        EmpDetailsPK empDetailsPK = new EmpDetailsPK();
-        EmpPostsDAO empPostsDAO = new EmpPostsDAO();
-
-        empDetailsPK.setEmpId(employeeDTO.getId());
-        empDetailsPK.setPostId(employeeDTO.getPostId());
-
-        EmpDetails empDetails = empDataDAO.findEmpDetails(empDetailsPK);
-
-        EmpPost empPost = empPostsDAO.findEmpPost(employeeDTO.getPostId());
-
-        empDetails.setEmpDetailsPK(empDetailsPK);
-        empDetails.setEmpPost(empPost);
-        empDetails.setEmpName(employeeDTO.getName());
-
         ProdInfoDAO prodInfoDAO = new ProdInfoDAO();
-        List<ProductInfo> productInfoList = new ArrayList<>();
-        Integer[] productIdArray = employeeDTO.getProductIdList();
+        ProductInfo productInfo = new ProductInfo();
 
-        for(int i = 0; i < productIdArray.length; i++) {
-            productInfoList.add(prodInfoDAO.findProductInfo(productIdArray[i]));
-        }
-
-        empDetails.setProductInfoList(productInfoList);
+        productInfo.setProductId(productDTO.getId());
+        productInfo.setProductName(productDTO.getName());
+        productInfo.setProductPrice(productDTO.getPrice());
 
         try {
-            empDataDAO.edit(empDetails);
+            prodInfoDAO.create(productInfo);
             responseCode = ResponseCode.SUCCESS;
-
+        } catch (PreexistingEntityException ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.ALREADY_EXISISTS;
         } catch (Exception ex) {
             Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
             responseCode = ResponseCode.CONTACT_ADMIN;
         }
+        
         return responseCode;
     }
-
-    public int deleteEmployee(EmployeeDTO employeeDTO) {
+    
+    public int updateProduct(ProductDTO productDTO) {
         int responseCode;
-
-        EmpDataDAO empDataDAO = new EmpDataDAO();
-        EmpDetailsPK empDetailsPK = new EmpDetailsPK();
-        EmpPostsDAO empPostsDAO = new EmpPostsDAO();
-
-        empDetailsPK.setEmpId(employeeDTO.getId());
-        empDetailsPK.setPostId(employeeDTO.getPostId());
-
-        EmpDetails empDetails = empDataDAO.findEmpDetails(empDetailsPK);
+        
+        ProdInfoDAO prodInfoDAO = new ProdInfoDAO();
+        ProductInfo productInfo = prodInfoDAO.findProductInfo(productDTO.getId());
+        
+        productInfo.setProductName(productDTO.getName());
+        productInfo.setProductPrice(productDTO.getPrice());
         
         try {
-            empDataDAO.destroy(empDetails.getEmpDetailsPK());
+            prodInfoDAO.edit(productInfo);
             responseCode = ResponseCode.SUCCESS;
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
-            responseCode = ResponseCode.INVALID_USER;
+
         } catch (Exception ex) {
             Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
             responseCode = ResponseCode.CONTACT_ADMIN;
@@ -327,26 +394,18 @@ public class EmployeeDataService {
         return responseCode;
     }
     
-    public int addProductsToEmp(EmployeeDTO employeeDTO, List<ProductInfo> productInfoList) {
+    public int deleteProduct(ProductDTO productDTO) {
         int responseCode;
-
-        EmpDataDAO empDataDAO = new EmpDataDAO();
-        EmpDetailsPK empDetailsPK = new EmpDetailsPK();
-
-        empDetailsPK.setEmpId(employeeDTO.getId());
-        empDetailsPK.setPostId(employeeDTO.getPostId());
-
-        EmpDetails empDetails = empDataDAO.findEmpDetails(empDetailsPK);
-
-        empDetails.setProductInfoList(productInfoList);
-
+        
+        ProdInfoDAO prodInfoDAO = new ProdInfoDAO();
+        ProductInfo productInfo = prodInfoDAO.findProductInfo(productDTO.getId());
+        
         try {
-            empDataDAO.edit(empDetails);
+            prodInfoDAO.destroy(productInfo.getProductId());
             responseCode = ResponseCode.SUCCESS;
-
-        } catch (Exception ex) {
+        } catch (NonexistentEntityException ex) {
             Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
-            responseCode = ResponseCode.CONTACT_ADMIN;
+            responseCode = ResponseCode.INVALID;
         }
         return responseCode;
     }

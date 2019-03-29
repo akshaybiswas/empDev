@@ -11,9 +11,9 @@ package org.dgrf.empdev.DTO;
  */
 public class ResponseCode {
     public static final int SUCCESS = 0;
-    public static final int INVALID_USER = 1;
+    public static final int INVALID = 1;
     public static final int WRONG_CREDENTIALS = 2;
-    public static final int INACTIVE_USER = 3;
+    public static final int INACTIVE = 3;
     public static final int LOGIN_ATTEMPTS_EXCEEDED = 4;
     public static final int ALREADY_EXISISTS = 5;
     public static final int EXCEPTION_CAUGHT = 99;
