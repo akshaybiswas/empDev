@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.dgrf.empdev.JPA.exceptions.NonexistentEntityException;
 
 /**
  *
@@ -301,6 +302,31 @@ public class EmployeeDataService {
         return responseCode;
     }
 
+    public int deleteEmployee(EmployeeDTO employeeDTO) {
+        int responseCode;
+
+        EmpDataDAO empDataDAO = new EmpDataDAO();
+        EmpDetailsPK empDetailsPK = new EmpDetailsPK();
+        EmpPostsDAO empPostsDAO = new EmpPostsDAO();
+
+        empDetailsPK.setEmpId(employeeDTO.getId());
+        empDetailsPK.setPostId(employeeDTO.getPostId());
+
+        EmpDetails empDetails = empDataDAO.findEmpDetails(empDetailsPK);
+        
+        try {
+            empDataDAO.destroy(empDetails.getEmpDetailsPK());
+            responseCode = ResponseCode.SUCCESS;
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.INVALID_USER;
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.CONTACT_ADMIN;
+        }
+        return responseCode;
+    }
+    
     public int addProductsToEmp(EmployeeDTO employeeDTO, List<ProductInfo> productInfoList) {
         int responseCode;
 
