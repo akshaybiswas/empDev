@@ -16,6 +16,7 @@ public class ResponseCode {
     public static final int INACTIVE = 3;
     public static final int LOGIN_ATTEMPTS_EXCEEDED = 4;
     public static final int ALREADY_EXISISTS = 5;
+    public static final int ILLEGAL_ORPHAN = 6;
     public static final int EXCEPTION_CAUGHT = 99;
     public static final int CONTACT_ADMIN = 999;
   

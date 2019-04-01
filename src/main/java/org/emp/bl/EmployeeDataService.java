@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.dgrf.empdev.JPA.exceptions.IllegalOrphanException;
 import org.dgrf.empdev.JPA.exceptions.NonexistentEntityException;
 
 /**
@@ -83,6 +84,25 @@ public class EmployeeDataService {
     public List<EmployeeDTO> getAllEmployeeDTO() {
         EmpDataDAO empDataDAO = new EmpDataDAO();
         List<EmpDetails> empDetailsList = empDataDAO.findEmpDetailsEntities();
+        List<EmployeeDTO> employeeDTOList = new ArrayList<>();
+
+        for (int i = 0; i < empDetailsList.size(); i++) {
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+
+            employeeDTO.setId(empDetailsList.get(i).getEmpDetailsPK().getEmpId());
+            employeeDTO.setPostId(empDetailsList.get(i).getEmpDetailsPK().getPostId());
+            employeeDTO.setName(empDetailsList.get(i).getEmpName());
+            employeeDTO.setJoined(empDetailsList.get(i).getEmpJoined());
+            employeeDTO.setExp(empDetailsList.get(i).getEmpExp());
+
+            employeeDTOList.add(employeeDTO);
+        }
+        return employeeDTOList;
+    }
+
+    public List<EmployeeDTO> getAllEmployeeDTO(int first,int pageSize) {
+        EmpDataDAO empDataDAO = new EmpDataDAO();
+        List<EmpDetails> empDetailsList = empDataDAO.findEmpDetailsEntities(pageSize, first);
         List<EmployeeDTO> employeeDTOList = new ArrayList<>();
 
         for (int i = 0; i < empDetailsList.size(); i++) {
@@ -350,6 +370,45 @@ public class EmployeeDataService {
         return responseCode;
     }
 
+    public int updatePost(PostDTO postDTO) {
+        int responseCode;
+
+        EmpPostsDAO empPostsDAO = new EmpPostsDAO();
+        EmpPost empPost = empPostsDAO.findEmpPost(postDTO.getId());
+
+        empPost.setPostName(postDTO.getName());
+        empPost.setPostGp(postDTO.getGp());
+
+        try {
+            empPostsDAO.edit(empPost);
+            responseCode = ResponseCode.SUCCESS;
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.CONTACT_ADMIN;
+        }
+        return responseCode;
+    }
+
+    public int deletePost(PostDTO postDTO) {
+        int responseCode;
+
+        EmpPostsDAO empPostsDAO = new EmpPostsDAO();
+        EmpPost empPost = empPostsDAO.findEmpPost(postDTO.getId());
+
+        try {
+            empPostsDAO.destroy(empPost.getPostId());
+            responseCode = ResponseCode.SUCCESS;
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.INVALID;
+        } catch (IllegalOrphanException ex) {
+            Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
+            responseCode = ResponseCode.ILLEGAL_ORPHAN;
+        }
+        return responseCode;
+    }
+
     public int addProduct(ProductDTO productDTO) {
         int responseCode;
 
@@ -370,19 +429,19 @@ public class EmployeeDataService {
             Logger.getLogger(EmployeeDataService.class.getName()).log(Level.SEVERE, null, ex);
             responseCode = ResponseCode.CONTACT_ADMIN;
         }
-        
+
         return responseCode;
     }
-    
+
     public int updateProduct(ProductDTO productDTO) {
         int responseCode;
-        
+
         ProdInfoDAO prodInfoDAO = new ProdInfoDAO();
         ProductInfo productInfo = prodInfoDAO.findProductInfo(productDTO.getId());
-        
+
         productInfo.setProductName(productDTO.getName());
         productInfo.setProductPrice(productDTO.getPrice());
-        
+
         try {
             prodInfoDAO.edit(productInfo);
             responseCode = ResponseCode.SUCCESS;
@@ -393,13 +452,13 @@ public class EmployeeDataService {
         }
         return responseCode;
     }
-    
+
     public int deleteProduct(ProductDTO productDTO) {
         int responseCode;
-        
+
         ProdInfoDAO prodInfoDAO = new ProdInfoDAO();
         ProductInfo productInfo = prodInfoDAO.findProductInfo(productDTO.getId());
-        
+
         try {
             prodInfoDAO.destroy(productInfo.getProductId());
             responseCode = ResponseCode.SUCCESS;
